@@ -81,3 +81,17 @@ fun cumsum(l: int list) =
 val a = cumsum([1,4,20]);
 ```
 
+4. Write a function `greeting : string option -> string` that given a string  option `option SOME` name returns the string `"Hello three, ...!"` where the dots would be replaced by *name*. Note that the name is given as an option, so if it is `NONE` then replace the dots with `"you"`
+
+```sml
+fun greeting(name: string option) = 
+        if isSome name
+        then "Hello there, "  ^ valOf name
+        else "Hello there, you"
+
+val a = greeting(NONE);
+val a = greeting(SOME("Ficapy"));
+```
+
+
+
