@@ -119,3 +119,16 @@ fun repeat(i: int list, n: int list) =
 val a = repeat([1,2,3], [4,0,3]);
 ```
 
+6. Write a function `addOpt : int option * int option -> int option` that given two "optional" integers, adds them if they are both present (returning `SOME` of their sum), or returns `NONE` if at least one of the two arguments is `NONE`
+
+```sml
+fun addOpt(a:int option,b: int option) =
+        if isSome a andalso isSome b
+        then SOME(valOf a + valOf b)
+        else NONE
+
+val a = addOpt(SOME(1),NONE)
+val a = addOpt(NONE,SOME(1))
+val a = addOpt(SOME(1),SOME(1))
+```
+
