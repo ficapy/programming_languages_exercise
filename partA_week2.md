@@ -93,5 +93,29 @@ val a = greeting(NONE);
 val a = greeting(SOME("Ficapy"));
 ```
 
+5. Write a function `repeat: int list * int list -> int list`  that given a list of integers and another list of nonnegative integers, repeats the integers in the first list according to the numbers indicated by the second list. For example `repeat ([1,2,3], [4,0,3]) = [1,1,1,1,3,3,3]`
 
+```sml
+fun mul(i:int,n:int) = 
+    (* 处理最简单的单个情况 *)
+        if n = 0
+        then []
+        else i::mul(i, n - 1)
+
+fun add_list(a:int list,b:int list) = 
+    (* 把两个列表加在一起 *)
+        if null a
+        then b
+        else hd a::add_list(tl a, b)
+
+val a = mul(1, 10);
+
+fun repeat(i: int list, n: int list) = 
+    (* 组合 *)
+        if null i
+        then []
+        else add_list(mul(hd i,hd n), repeat(tl i,tl n))
+
+val a = repeat([1,2,3], [4,0,3]);
+```
 
