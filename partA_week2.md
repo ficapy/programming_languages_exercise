@@ -159,3 +159,19 @@ val b = addAllOpt([NONE, NONE, NONE])
 val c = addAllOpt([])
 ```
 
+8. Write a function `any : bool list -> bool` that given a list of booleans returns `true` if there is at least one of them that is `true`, otherwise returns \verb|false|false. (If the list is empty it should return`false` because there is no`true`.)
+
+```sml
+fun any(l: bool list) =
+        if null l
+        then false
+        else if null (tl l)
+            then hd l
+            else hd l andalso any(tl l)
+
+val a = any([true, false]);
+val a = any([]);
+val a = any([true]);
+val a = any([false]);
+```
+
