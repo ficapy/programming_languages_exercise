@@ -24,3 +24,60 @@ val a = alternate([1,2,3,4]);
 val a = alternate([1,2,3,4,5]);
 ```
 
+2. Write a function `min_max : int list -> int * int` int that takes a non-empty list of numbers, and returns a pair `(min, max)`of the minimum and maximum of the numbers in the list.
+
+写查找最小，查找最大，然后组合
+
+```sml
+fun find_max(l: int list) = 
+        if null (tl l)
+        then hd l
+        else let
+                val remain = find_max(tl l)
+            in
+                if hd l > remain
+                then hd l
+                else remain
+            end
+
+val a = find_max([~3,~2,~1]);
+val a = find_max([~3]);
+val a = find_max([~1,1,4]);
+
+fun find_min(l: int list) = 
+        if null (tl l)
+        then hd l
+        else let
+                val remain = find_min(tl l)
+            in
+                if hd l > remain
+                then remain
+                else hd l
+            end
+
+val a = find_min([~3,~2,~1]);
+val a = find_min([~3]);
+val a = find_min([~1,1,4]);
+
+fun min_max(l: int list) = 
+        (find_min(l), find_max(l))
+
+val a = min_max([~1,1,4]);
+```
+
+3. Write a function `cumsum : int list -> int list` that takes a list of numbers and returns a list of the partial sums of those numbers. For example `cumsum [1,4,20] = [1,5,25]`
+
+```sml
+fun cumsum(l: int list) = 
+        let
+            fun inner(l, acc) = 
+                    if null l
+                    then []
+                    else (acc + hd l)::inner(tl l, acc + hd l)
+        in
+            inner(l, 0)
+        end
+
+val a = cumsum([1,4,20]);
+```
+
