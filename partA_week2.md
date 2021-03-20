@@ -167,11 +167,27 @@ fun any(l: bool list) =
         then false
         else if null (tl l)
             then hd l
-            else hd l andalso any(tl l)
+            else hd l orelse any(tl l)
 
 val a = any([true, false]);
 val a = any([]);
 val a = any([true]);
 val a = any([false]);
+```
+
+9. Write a function `all:bool list -> bool` that given a list of booleans returns `true` if all of them `true`, otherwise returns  `false`. (If the list is empty it should return `true` because there is no `false`)
+
+```sml
+fun all(l: bool list) =
+        if null l
+        then true
+        else if null (tl l)
+            then hd l
+            else hd l andalso all(tl l)
+
+val a = all([true, false]);
+val a = all([]);
+val a = all([true]);
+val a = all([false]);
 ```
 
