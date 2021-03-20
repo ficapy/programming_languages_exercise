@@ -132,3 +132,30 @@ val a = addOpt(NONE,SOME(1))
 val a = addOpt(SOME(1),SOME(1))
 ```
 
+7. Write a function `addALLOpt : int option list -> int option` that given a list of "optional" integers, adds those integers that are there (i.e. adds all the `SOME i`) . For example: `addAllOpt ([SOME 1, NONE, SOME 3])= SOME 4.` If the list does not contain any `SOME` is in it, i.e. they are all `NONE` or the list is empty, the function should return `NONE`.
+
+```
+fun addAllOpt(l: int option list) = 
+        if null l
+        then NONE
+        else
+            let 
+                fun addOpt(a:int option,b: int option) =
+                        let
+                            val ra = if isSome a then valOf a else 0
+                            val rb = if isSome b then valOf b else 0
+                        in
+                            if isSome a orelse isSome b
+                            then SOME(ra + rb)
+                            else NONE
+                        end
+
+            in
+                addOpt(hd l, addAllOpt(tl l))
+            end
+
+val a = addAllOpt([SOME(1), NONE, SOME(3)])
+val b = addAllOpt([NONE, NONE, NONE])
+val c = addAllOpt([])
+```
+
