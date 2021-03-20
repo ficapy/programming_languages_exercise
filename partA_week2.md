@@ -191,3 +191,14 @@ val a = all([true]);
 val a = all([false]);
 ```
 
+10. Write a function `zip : int list * int list -> int * int list` that given two lists of integers creates consecutive pairs, and stops when one of the lists is empty. For example:`zip ([1,2,3], [4, 6]) = [(1,4), (2,6)]`.
+
+```sml
+fun zip(a: int list,b: int list) = 
+        if null a orelse null b
+        then []
+        else (hd a,hd b)::zip(tl a,tl b)
+
+val a = zip([1,2,3], [4,6])
+```
+
