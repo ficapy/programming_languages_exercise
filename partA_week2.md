@@ -503,3 +503,63 @@ fun divide(a: int list) =
 val a = divide([1,2,3,4,5]);
 ```
 
+21. Write another sorting function `not_so_quick_sort : int list -> int list` that works as follows: Given the initial list of integers, splits it in two lists using divide, then recursively sorts those two lists, then merges them together with `sortedMerge`. 
+
+上面是快排，这里是归并
+
+```sml
+fun divide(a: int list) = 
+        let
+            fun add(current:(int list)*(int list),position:int,v:int) = 
+                    if position = 0
+                    then (v::(#1 current),#2 current)
+                    else (#1 current, v::(#2 current))
+            
+            fun inner(a:int list,pre: int list,post: int list, tag:bool) = 
+                    if null a
+                    then ([],[])
+                    else if tag
+                        then add(inner(tl a, pre, post, not tag), 0, hd a )
+                        else add(inner(tl a, pre, post, not tag), 1, hd a )
+        in
+            inner(a,[],[],true)
+        end
+
+
+fun sortedMerge(aa:int list*int list) = 
+        let
+            val a = (#1 aa)
+            val b = (#2 aa)
+        in
+            if null a andalso null b
+            then []
+            else if null a
+                then (hd b)::sortedMerge((a, (tl b)))
+                else if null b
+                    then (hd a)::sortedMerge(((tl a),b))
+                    else if hd a < hd b
+                        then (hd a)::sortedMerge(((tl a),b))
+                        else (hd b)::sortedMerge((a,(tl b)))
+        end
+
+
+fun qsort(a:int list) = 
+        (* 如果只有一个元素的时候返回自身 *)
+        if null a orelse (not (null a) andalso null (tl a))
+        then a
+        else  let
+                val full = divide(a)
+                val left = #1 full
+                val right = #2 full
+                val sort_left = qsort(left)
+                val sort_right = qsort(right)
+            in
+                sortedMerge(sort_left, sort_right)
+            end
+
+val a = qsort([]);
+val a = qsort([1]);
+val a = qsort([2,1,5,6,9,3]);
+val a = qsort([2,3,2,4,4,3])
+```
+
