@@ -337,3 +337,23 @@ val a = splitAt([~3,~1,1,3], 4);
 val a = splitAt([~3,~1,1,3], 5);
 ```
 
+16. Write a function`isSorted : int list -> boolean` that given a list of integers determines whether the list is sorted in increasing order.
+
+```sml
+fun isSorted(l: int list) = 
+        (* 简单设置它最少有两个元素 *)
+        let
+            fun inner(l:int list,a:int list,b:int list) = 
+                    if null b
+                    then true
+                    else if hd a > hd b
+                        then false
+                        else inner(tl l,tl l,tl (tl l))
+        in
+            inner(l, l, tl l)
+        end
+
+val a = isSorted([1,2]);
+val a = isSorted([2,1,3]);
+```
+
