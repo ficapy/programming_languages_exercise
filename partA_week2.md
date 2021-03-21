@@ -378,3 +378,25 @@ val a = isSorted([3,2,1]);
 val a = isSorted([2,1,3]);
 ```
 
+18. Write a function `sortedMerge : int list * int list -> int list`that takes two lists of integers that are each sorted from smallest to largest, and merges them into one sorted list. For example:`sortedMerge ([1,4,7], [5,8,9]) = [1,4,5,7,8,9]`
+
+```sml
+fun sortedMerge(aa:int list*int list) = 
+        let
+            val a = (#1 aa)
+            val b = (#2 aa)
+        in
+            if null a andalso null b
+            then []
+            else if null a
+                then (hd b)::sortedMerge((a, (tl b)))
+                else if null b
+                    then (hd a)::sortedMerge(((tl a),b))
+                    else if hd a < hd b
+                        then (hd a)::sortedMerge(((tl a),b))
+                        else (hd b)::sortedMerge((a,(tl b)))
+        end
+
+val a = sortedMerge(([1,4,7],[5,8,9]));
+```
+
