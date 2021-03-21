@@ -134,7 +134,7 @@ val a = addOpt(SOME(1),SOME(1))
 
 7. Write a function `addALLOpt : int option list -> int option` that given a list of "optional" integers, adds those integers that are there (i.e. adds all the `SOME i`) . For example: `addAllOpt ([SOME 1, NONE, SOME 3])= SOME 4.` If the list does not contain any `SOME` is in it, i.e. they are all `NONE` or the list is empty, the function should return `NONE`.
 
-```
+```sml
 fun addAllOpt(l: int option list) = 
         if null l
         then NONE
