@@ -245,3 +245,36 @@ print(zipRecycle([1], [1]))
 print(zipRecycle([1, 2], [1]))
 ```
 
+12. Write a version `zipOpt` of `zip` with return type `(int * int) list option`. This version should return `SOME`  of a list when the original lists have the same length, and `NONE` if they do not.
+
+先写出some 和 none的加法出来，再组合
+
+```sml
+fun someadd(a:(int*int) option,b:(int*int) list option) = 
+        if isSome a andalso isSome b
+        then let val a = valOf a
+                val b = valOf b
+            in
+                SOME(a::b)
+            end
+        else NONE
+
+val a = someadd(SOME((1,2)), SOME([(3,4)]));
+val a = someadd(SOME((1,2)), NONE);
+
+fun zipOpt(a:int list,b:int list) = 
+        if null a andalso null b
+        then SOME([])
+        else if null a andalso not (null b)
+            then NONE
+            else if null b andalso not (null a)
+                then NONE
+                else someadd(SOME((hd a,hd b)), zipOpt(tl a, tl b))
+
+val a = zipOpt([1,2,3],[4,5,6]);
+val a = zipOpt([1,2,3],[4]);
+val a = zipOpt([1,2,3],[]);
+```
+
+
+
