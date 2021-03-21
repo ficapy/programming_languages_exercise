@@ -313,3 +313,27 @@ fun splitup(a: int list) =
 val a = splitup([~3,~1,1,3]);
 ```
 
+15. Write a version `splitAt : int list * int -> int list * int list` of the previous function that takes an extra "threshold" parameter, and uses that instead of 0 as the separating point for the two resulting lists.
+
+```sml
+fun splitAt(a: int list, target: int) = 
+        let
+            fun add(current:(int list)*(int list),v:int) = 
+                    (v::(#1 current),#2 current)
+            
+            fun inner(a:int list,p1:int list,index:int) = 
+                    if index > target orelse null a
+                    then (p1,a)
+                    else add(inner(tl a, p1, index + 1), hd a )
+        in
+            inner(a,[],1)
+        end
+
+val a = splitAt([~3,~1,1,3], 0);
+val a = splitAt([~3,~1,1,3], 1);
+val a = splitAt([~3,~1,1,3], 2);
+val a = splitAt([~3,~1,1,3], 3);
+val a = splitAt([~3,~1,1,3], 4);
+val a = splitAt([~3,~1,1,3], 5);
+```
+
