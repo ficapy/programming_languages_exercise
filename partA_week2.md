@@ -337,6 +337,27 @@ val a = splitAt([~3,~1,1,3], 4);
 val a = splitAt([~3,~1,1,3], 5);
 ```
 
+上面的写法理解错题意了
+
+```sml
+fun splitAt1(a: int list, target: int) = 
+        let
+            fun add(current:(int list)*(int list),position:int,v:int) = 
+                    if position = 0
+                    then (v::(#1 current),#2 current)
+                    else (#1 current, v::(#2 current))
+            
+            fun inner(a:int list,non: int list,ne: int list) = 
+                    if null a
+                    then ([],[])
+                    else if hd a > target
+                        then add(inner(tl a, non, ne), 0, hd a )
+                        else add(inner(tl a, non, ne), 1, hd a )
+        in
+            inner(a,[],[])
+        end
+```
+
 16. Write a function`isSorted : int list -> boolean` that given a list of integers determines whether the list is sorted in increasing order.
 
 ```sml
@@ -399,4 +420,64 @@ fun sortedMerge(aa:int list*int list) =
 
 val a = sortedMerge(([1,4,7],[5,8,9]));
 ```
+
+19. Write a sorting function `qsort : int list -> int list` that works as follows: Takes the first element out, and uses it as the "threshold" for `splitAt`. It then recursively sorts the two lists produced by `splitAt`. Finally it brings the two lists together. (Don't forget that element you took out, it needs to get back in at some point). You could use `sortedMerge` for the "bring together" part, but you do not need to as all the numbers in one list are less than all the numbers in the other.)
+
+```sml
+fun splitAt(a: int list, target: int) = 
+        let
+            fun add(current:(int list)*(int list),position:int,v:int) = 
+                    if position = 0
+                    then (v::(#1 current),#2 current)
+                    else (#1 current, v::(#2 current))
+            
+            fun inner(a:int list,non: int list,ne: int list) = 
+                    if null a
+                    then ([],[])
+                    else if hd a < target
+                        then add(inner(tl a, non, ne), 0, hd a )
+                        else add(inner(tl a, non, ne), 1, hd a )
+        in
+            inner(a,[],[])
+        end
+
+
+fun sortedMerge(aa:int list*int list) = 
+        let
+            val a = (#1 aa)
+            val b = (#2 aa)
+        in
+            if null a andalso null b
+            then []
+            else if null a
+                then (hd b)::sortedMerge((a, (tl b)))
+                else if null b
+                    then (hd a)::sortedMerge(((tl a),b))
+                    else if hd a < hd b
+                        then (hd a)::sortedMerge(((tl a),b))
+                        else (hd b)::sortedMerge((a,(tl b)))
+        end
+
+
+fun qsort(a:int list) = 
+        if null a
+        then []
+        else 
+            let val pivot = hd a
+                val full = splitAt(a, pivot)
+                val left = #1 full
+                val right = #2 full
+                val sort_left = qsort(left)
+                val sort_right = qsort(tl right)
+            in
+                (* 注意，splitAt需要把小的放在前面 *)
+                sortedMerge(sort_left, pivot::sort_right)
+            end
+
+val a = qsort([]);
+val a = qsort([2,1,5,6,9,3]);
+val a = qsort([2,3,2,4,4,3])
+```
+
+20. Write a function`divide : int list -> int list * int list`that takes a list of integers and produces two lists by alternating elements between the two lists.  For example:`divide ([1,2,3,4,5,6,7]) = ([1,3,5,7], [2,4,6])`.
 
