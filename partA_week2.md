@@ -290,3 +290,26 @@ val a = lookup([],"123");
 val a = lookup([("1",1),("12",2),("123",3)],"123");
 ```
 
+14. Write a function `splitup : int list -> int list * int list` that given a list of integers creates two lists of integers, one containing the non-negative entries, the other containing the negative entries. Relative order must be preserved: All non-negative entries must appear in the same order in which they were on the original list, and similarly for the negative entries.
+
+```sml
+fun splitup(a: int list) = 
+        let
+            fun add(current:(int list)*(int list),position:int,v:int) = 
+                    if position = 0
+                    then (v::(#1 current),#2 current)
+                    else (#1 current, v::(#2 current))
+            
+            fun inner(a:int list,non: int list,ne: int list) = 
+                    if null a
+                    then ([],[])
+                    else if hd a > 0
+                        then add(inner(tl a, non, ne), 0, hd a )
+                        else add(inner(tl a, non, ne), 1, hd a )
+        in
+            inner(a,[],[])
+        end
+
+val a = splitup([~3,~1,1,3]);
+```
+
