@@ -563,3 +563,20 @@ val a = qsort([2,1,5,6,9,3]);
 val a = qsort([2,3,2,4,4,3])
 ```
 
+22. Write a function `fullDivide : int * int -> int * int` that given two numbers `k` and `n` it attempts to evenly divide`k` into `n` as many times as possible, and returns a pair `(d, n2)` where`d` is the number of times while `n2` is the resulting `n` after all those divisions. Examples: `fullDivide (2, 40) = (3, 5)` because`2*2*2*5 = 40` and`fullDivide((3,10)) = (0, 10) ` because `3` does not divide `10`.
+
+```sml
+fun fullDivide(n:int, l: int) = 
+        let
+            fun inner(l:int,count:int) = 
+                    if (l mod n) <> 0
+                    then (count,l)
+                    else inner(l div n, count + 1)
+        in
+            inner(l,0)
+        end
+
+val a = fullDivide(2,40);
+val a = fullDivide(3,10);
+```
+
