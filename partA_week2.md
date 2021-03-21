@@ -357,3 +357,24 @@ val a = isSorted([1,2]);
 val a = isSorted([2,1,3]);
 ```
 
+17. Write a function `isAnySorted : int list -> boolean`, that given a list of integers determines whether the list is sorted in either increasing or decreasing order.
+
+```sml
+fun isSorted(l: int list) = 
+        (* 简单设置它最少有两个元素 *)
+        let
+            fun inner(l:int list,a:int list,b:int list, tag: bool) = 
+                    if null b
+                    then true
+                    else if not ((hd a > hd b) = tag)
+                        then false
+                        else inner(tl l,tl l,tl (tl l), tag)
+        in
+            inner(l, l, tl l, hd l > hd (tl l))
+        end
+
+val a = isSorted([1,2]);
+val a = isSorted([3,2,1]);
+val a = isSorted([2,1,3]);
+```
+
