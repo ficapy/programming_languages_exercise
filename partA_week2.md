@@ -276,5 +276,17 @@ val a = zipOpt([1,2,3],[4]);
 val a = zipOpt([1,2,3],[]);
 ```
 
+13. Write a function `lookup : (string * int) list * string -> int option` that takes a list of pairs `(s, i)` and also a string `s2` to look up. It then goes through the list of pairs looking for the string`s2` in the first component. If it finds a match with corresponding number `i`, then it returns`SOME i`. If it does not, it returns `NONE`.
 
+```sml
+fun lookup(l: (string*int) list, target: string) = 
+        if null l
+        then NONE
+        else if (#1 (hd l)) = target
+            then SOME(#2 (hd l))
+            else lookup(tl l, target)
+
+val a = lookup([],"123");
+val a = lookup([("1",1),("12",2),("123",3)],"123");
+```
 
