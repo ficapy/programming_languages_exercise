@@ -202,3 +202,46 @@ fun zip(a: int list,b: int list) =
 val a = zip([1,2,3], [4,6])
 ```
 
+11. Write a version`zipRecycle` of `zip`, where when one list is empty it starts recycling from its start until the other list completes. For example:`zipRecycle ([1,2,3], [1, 2, 3, 4, 5, 6, 7]) =[(1,1), (2,2), (3, 3), (1,4), (2,5), (3,6), (1,7)]`
+
+```sml
+fun zipRecycle(a: int list,b: int list) = 
+        let fun inner(a:int list,b: int list,raw_a:int list, raw_b:int list, adone:bool, bdone:bool) = 
+                    if adone andalso bdone
+                    then []
+                    else if null a
+                        then (hd raw_a, hd b)::inner(tl raw_a,tl b, raw_a, raw_b, true, bdone orelse (null (tl b)))
+                        else if null b
+                            then (hd a, hd raw_b)::inner(tl a,tl raw_b, raw_a, raw_b, adone orelse (null (tl a)), true)
+                            else (hd a, hd b)::inner(tl a,tl b, raw_a, raw_b, adone orelse (null (tl a)), bdone orelse (null (tl b)))
+        in
+            inner(a,b,a,b,false,false)
+        end
+
+val a = zipRecycle([1], [1,2,3]);
+val a = zipRecycle([1,2,3], [1,2,3,4,5,6,7]);
+```
+
+```python
+def zipRecycle(a, b):
+    def inner(a, b, raw_a, raw_b, adone, bdone):
+        if adone and bdone:
+            return []
+        else:
+            if not a:
+                return [(raw_a[0], b[0])] + inner(raw_a[1:], b[1:], raw_a, raw_b, True, bdone or len(b[1:]) == 0)
+            else:
+                if not b:
+                    return [(a[0], raw_b[0])] + inner(a[1:], raw_b[1:], raw_a, raw_b, adone or len(a[1:]) == 0, True)
+                else:
+                    return [(a[0], b[0])] + inner(a[1:], b[1:], raw_a, raw_b, adone or len(a[1:]) == 0,
+                                                  bdone or len(b[1:]) == 0)
+
+    return inner(a, b, a, b, False, False)
+
+
+print(zipRecycle([1, ], [1, 2, 3, 4, 5, 6, 7]))
+print(zipRecycle([1], [1]))
+print(zipRecycle([1, 2], [1]))
+```
+
