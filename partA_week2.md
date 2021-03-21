@@ -481,3 +481,25 @@ val a = qsort([2,3,2,4,4,3])
 
 20. Write a function`divide : int list -> int list * int list`that takes a list of integers and produces two lists by alternating elements between the two lists.  For example:`divide ([1,2,3,4,5,6,7]) = ([1,3,5,7], [2,4,6])`.
 
+```sml
+(* 这个和上面的SplitAt十分相似 *)
+fun divide(a: int list) = 
+        let
+            fun add(current:(int list)*(int list),position:int,v:int) = 
+                    if position = 0
+                    then (v::(#1 current),#2 current)
+                    else (#1 current, v::(#2 current))
+            
+            fun inner(a:int list,pre: int list,post: int list, tag:bool) = 
+                    if null a
+                    then ([],[])
+                    else if tag
+                        then add(inner(tl a, pre, post, not tag), 0, hd a )
+                        else add(inner(tl a, pre, post, not tag), 1, hd a )
+        in
+            inner(a,[],[],true)
+        end
+
+val a = divide([1,2,3,4,5]);
+```
+
