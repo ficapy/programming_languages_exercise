@@ -8,11 +8,9 @@
 fun alternate(input :int list) = 
         let
             fun inner(input: int list, plus: bool) =
-                    if null input
-                    then 0
-                    else if plus
-                        then hd input + inner(tl input, not plus)
-                        else (0 - hd input) + inner(tl input, not plus) (* 或者 else inner(tl input, not plus) - hd input *)
+                    if null input then 0 else 
+                        if plus then hd input + inner(tl input, not plus) else 
+                            (0 - hd input) + inner(tl input, not plus) (* 或者 else inner(tl input, not plus) - hd input *)
         in
             inner(input, true)
         end
@@ -24,20 +22,27 @@ val a = alternate([1,2,3,4]);
 val a = alternate([1,2,3,4,5]);
 ```
 
+更简单的写法
+
+1-2+3-4 = 1-(2-3+4) = 1-(2-(3-4))
+
+```sml
+fun alternate(nums: int list) = 
+        if null nums then 0 else
+            hd nums - alternate(tl nums)
+```
+
+
+
 2. Write a function `min_max : int list -> int * int` int that takes a non-empty list of numbers, and returns a pair `(min, max)`of the minimum and maximum of the numbers in the list.
 
 写查找最小，查找最大，然后组合
 
 ```sml
 fun find_max(l: int list) = 
-        if null (tl l)
-        then hd l
-        else let
-                val remain = find_max(tl l)
-            in
-                if hd l > remain
-                then hd l
-                else remain
+        if null (tl l) then hd l else 
+            let val remain = find_max(tl l)
+            in if hd l > remain then hd l else remain
             end
 
 val a = find_max([~3,~2,~1]);
@@ -45,14 +50,9 @@ val a = find_max([~3]);
 val a = find_max([~1,1,4]);
 
 fun find_min(l: int list) = 
-        if null (tl l)
-        then hd l
-        else let
-                val remain = find_min(tl l)
-            in
-                if hd l > remain
-                then remain
-                else hd l
+        if null (tl l) then hd l else 
+            let val remain = find_min(tl l)
+            in if hd l > remain then remain else hd l
             end
 
 val a = find_min([~3,~2,~1]);
@@ -65,17 +65,45 @@ fun min_max(l: int list) =
 val a = min_max([~1,1,4]);
 ```
 
+```sml
+fun min_max(l:int list) = 
+        if null l then (0,0) else
+            if null (tl l) then (hd l, hd l) else
+                let
+                    val temp = hd l
+                    val result = min_max(tl l)
+                    val min = #1 result
+                    val max = #2 result
+                in
+                    (if min<temp then min else temp, if max > temp then max else temp)
+                end
+
+val a  = min_max([1, 5, 2, 7, 9, ~1])
+```
+
+```python
+def min_max(l):
+    if not l:
+        return (0, 0)
+    if len(l) == 1:
+        return (l[0], l[0])
+    end = min_max(l[1:])
+    min, max = end
+    return min if min < l[0] else l[0], max if max > l[0] else l[0]
+
+
+print(min_max([1, 5, 2, 7, 9, -1]))
+```
+
+
+
 3. Write a function `cumsum : int list -> int list` that takes a list of numbers and returns a list of the partial sums of those numbers. For example `cumsum [1,4,20] = [1,5,25]`
 
 ```sml
 fun cumsum(l: int list) = 
-        let
-            fun inner(l, acc) = 
-                    if null l
-                    then []
-                    else (acc + hd l)::inner(tl l, acc + hd l)
-        in
-            inner(l, 0)
+        let fun inner(l, acc) = 
+                    if null l then [] else (acc + hd l)::inner(tl l, acc + hd l)
+        in inner(l, 0)
         end
 
 val a = cumsum([1,4,20]);
@@ -97,24 +125,18 @@ val a = greeting(SOME("Ficapy"));
 
 ```sml
 fun mul(i:int,n:int) = 
-    (* 处理最简单的单个情况 *)
-        if n = 0
-        then []
-        else i::mul(i, n - 1)
+        (* 处理最简单的单个情况 *)
+        if n = 0 then [] else i::mul(i, n - 1)
 
 fun add_list(a:int list,b:int list) = 
-    (* 把两个列表加在一起 *)
-        if null a
-        then b
-        else hd a::add_list(tl a, b)
+        (* 把两个列表加在一起 *)
+        if null a then b else hd a::add_list(tl a, b)
 
 val a = mul(1, 10);
 
 fun repeat(i: int list, n: int list) = 
-    (* 组合 *)
-        if null i
-        then []
-        else add_list(mul(hd i,hd n), repeat(tl i,tl n))
+        (* 组合 *)
+        if null i then [] else add_list(mul(hd i,hd n), repeat(tl i,tl n))
 
 val a = repeat([1,2,3], [4,0,3]);
 ```
@@ -136,20 +158,15 @@ val a = addOpt(SOME(1),SOME(1))
 
 ```sml
 fun addAllOpt(l: int option list) = 
-        if null l
-        then NONE
-        else
+        if null l then NONE else
             let 
                 fun addOpt(a:int option,b: int option) =
                         let
                             val ra = if isSome a then valOf a else 0
                             val rb = if isSome b then valOf b else 0
                         in
-                            if isSome a orelse isSome b
-                            then SOME(ra + rb)
-                            else NONE
+                            if isSome a orelse isSome b then SOME(ra + rb) else NONE
                         end
-
             in
                 addOpt(hd l, addAllOpt(tl l))
             end
@@ -163,11 +180,9 @@ val c = addAllOpt([])
 
 ```sml
 fun any(l: bool list) =
-        if null l
-        then false
-        else if null (tl l)
-            then hd l
-            else hd l orelse any(tl l)
+        if null l then false else 
+            if null (tl l) then hd l else 
+                hd l orelse any(tl l)
 
 val a = any([true, false]);
 val a = any([]);
@@ -179,11 +194,9 @@ val a = any([false]);
 
 ```sml
 fun all(l: bool list) =
-        if null l
-        then true
-        else if null (tl l)
-            then hd l
-            else hd l andalso all(tl l)
+        if null l then true else 
+            if null (tl l) then hd l else 
+                hd l andalso all(tl l)
 
 val a = all([true, false]);
 val a = all([]);
@@ -195,9 +208,8 @@ val a = all([false]);
 
 ```sml
 fun zip(a: int list,b: int list) = 
-        if null a orelse null b
-        then []
-        else (hd a,hd b)::zip(tl a,tl b)
+        if null a orelse null b then [] else 
+            (hd a,hd b)::zip(tl a,tl b)
 
 val a = zip([1,2,3], [4,6])
 ```
@@ -207,13 +219,10 @@ val a = zip([1,2,3], [4,6])
 ```sml
 fun zipRecycle(a: int list,b: int list) = 
         let fun inner(a:int list,b: int list,raw_a:int list, raw_b:int list, adone:bool, bdone:bool) = 
-                    if adone andalso bdone
-                    then []
-                    else if null a
-                        then (hd raw_a, hd b)::inner(tl raw_a,tl b, raw_a, raw_b, true, bdone orelse (null (tl b)))
-                        else if null b
-                            then (hd a, hd raw_b)::inner(tl a,tl raw_b, raw_a, raw_b, adone orelse (null (tl a)), true)
-                            else (hd a, hd b)::inner(tl a,tl b, raw_a, raw_b, adone orelse (null (tl a)), bdone orelse (null (tl b)))
+                    if adone andalso bdone then [] else 
+                        if null a then (hd raw_a, hd b)::inner(tl raw_a,tl b, raw_a, raw_b, true, bdone orelse (null (tl b))) else 
+                            if null b then (hd a, hd raw_b)::inner(tl a,tl raw_b, raw_a, raw_b, adone orelse (null (tl a)), true) else 
+                                (hd a, hd b)::inner(tl a,tl b, raw_a, raw_b, adone orelse (null (tl a)), bdone orelse (null (tl b)))
         in
             inner(a,b,a,b,false,false)
         end
@@ -251,8 +260,8 @@ print(zipRecycle([1, 2], [1]))
 
 ```sml
 fun someadd(a:(int*int) option,b:(int*int) list option) = 
-        if isSome a andalso isSome b
-        then let val a = valOf a
+        if isSome a andalso isSome b then 
+            let val a = valOf a
                 val b = valOf b
             in
                 SOME(a::b)
@@ -263,13 +272,10 @@ val a = someadd(SOME((1,2)), SOME([(3,4)]));
 val a = someadd(SOME((1,2)), NONE);
 
 fun zipOpt(a:int list,b:int list) = 
-        if null a andalso null b
-        then SOME([])
-        else if null a andalso not (null b)
-            then NONE
-            else if null b andalso not (null a)
-                then NONE
-                else someadd(SOME((hd a,hd b)), zipOpt(tl a, tl b))
+        if null a andalso null b then SOME([]) else 
+            if null a andalso not (null b) then NONE else 
+                if null b andalso not (null a) then NONE else 
+                    someadd(SOME((hd a,hd b)), zipOpt(tl a, tl b))
 
 val a = zipOpt([1,2,3],[4,5,6]);
 val a = zipOpt([1,2,3],[4]);
@@ -579,4 +585,6 @@ fun fullDivide(n:int, l: int) =
 val a = fullDivide(2,40);
 val a = fullDivide(3,10);
 ```
+
+23. Using `fullDivide`, write a function `factorize : int -> (int * int) list` that given a number `n` returns a list of pairs `(d, k)` where`d` is a prime number dividing `n` and `k` is the number of times it fits. The pairs should be in increasing order of prime factor, and the process should stop when the divisor considered surpasses the square root of`n`. If you make sure to use the reduced number`n2` given by `fullDivide` for each next step, you should not need to test if the divisors are prime: If a number divides into`n`, it must be prime (if it had prime factors, they would have been earlier prime factors of `n` and thus reduced earlier). Examples: `factorize(20) = [(2,2), (5,1)]`; `factorize(36) = [(2,2), (3,2)]`; `factorize(1) = []`.
 
