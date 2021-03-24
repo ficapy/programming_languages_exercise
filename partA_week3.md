@@ -148,3 +148,13 @@ val a = is_positive(SUCC ZERO);
 val a = is_positive(ZERO);
 ```
 
+10.  Write`pred : nat -> nat`, which given a "natural number" returns its predecessor. Since 0 does not have a predecessor in the natural numbers, throw an exception `Negative` (will need to define it first).
+
+```sml
+exception Negative
+fun pred n =
+    case n of
+    ZERO => raise Negative
+    | SUCC p' => p'
+```
+
