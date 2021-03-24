@@ -47,3 +47,23 @@ fun number_misgraded x =
 val t = number_misgraded([(true,{id= 123,grade=SOME(10)})])
 ```
 
+
+
+```sml
+datatype 'a tree = leaf 
+                 | node of { value : 'a, left : 'a tree, right : 'a tree }
+datatype flag = leave_me_alone | prune_me
+```
+
+5. Write a function `tree_height` that accepts an `'a tree` and evaluates to a height of this tree. The height of a tree is the length of the longest path to a leaf. Thus the height of a leaf is `0`.
+
+```sml
+fun tree_height x = 
+        case x of
+            leaf => 0
+        |node{value=_,left=a,right=b} => 1 + Int.max(tree_height a, tree_height b)
+
+    
+val a = tree_height(node{value=1,left=node{value=2,left=node{value=3,left=leaf,right=leaf},right=leaf},right=leaf})
+```
+
