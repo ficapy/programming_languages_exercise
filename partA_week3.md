@@ -158,3 +158,113 @@ fun pred n =
     | SUCC p' => p'
 ```
 
+11. Write `nat_to_int : nat -> int`, which given a "natural number" returns the corresponding `int`. For example, `nat_to_int (SUCC (SUCC ZERO)) = 2`.  (Do not use this function for problems 13-16 -- it makes them too easy.)
+
+```sml
+fun nat_to_int x =
+        case x of
+            ZERO => 0
+        | SUCC p' => 1 + nat_to_int p'
+
+val a= nat_to_int (SUCC (SUCC (SUCC ZERO)))
+```
+
+12.  Write `int_to_nat : int -> nat` which given an integer returns a "natural number" representation for it, or throws a `Negative` exception if the integer was negative.  (Again, do not use this function in the next few problems.)
+
+```sml
+fun int_to_nat x =
+        if x <0 then raise Negative else
+            if x = 0 then ZERO else SUCC (int_to_nat(x-1))
+
+val a = int_to_nat 10;
+val b = nat_to_int a;
+```
+
+13. Write `add : nat * nat -> nat` to perform addition.
+
+```sml
+fun add x =
+        case x of
+            (a,ZERO) => a
+        |(b, SUCC b') => SUCC(add(b, b'))
+
+val a = add((SUCC ZERO),(SUCC ZERO));
+```
+
+14. Write `sub : nat * nat -> nat` to perform subtraction.  (Hint: Use`pred`.)
+
+```sml
+fun sub x =
+        case x of
+            (a,ZERO) => a
+        |(ZERO, _) => raise Negative
+        |(SUCC p',_) => p'
+
+val a = sub((SUCC (SUCC ZERO)),(SUCC ZERO));
+```
+
+15. Write`mult : nat * nat -> nat` to perform multiplication. (Hint: Use `add`.)
+
+```sml
+fun mult x =
+        case x of
+            (a,ZERO) => ZERO
+        |(p,SUCC p') => add(p, mult(p,p'))
+
+val a = mult((SUCC (SUCC ZERO)),(SUCC (SUCC (SUCC ZERO))))
+```
+
+16. Write `less_than : nat * nat -> bool` to return `true` when the first argument is less than the second.
+
+```sml
+fun less_than(first,last) =
+        case (first,last) of
+            (_,ZERO) => false
+        |(ZERO,_) => true
+        |(SUCC a', SUCC b') => less_than(a', b')
+val a = less_than((SUCC (SUCC ZERO)),(SUCC ZERO));
+```
+
+
+
+The remaining problems use this datatype, which represents sets of integers:
+
+```sml
+datatype intSet = 
+  Elems of int list (*list of integers, possibly with duplicates to be ignored*)
+| Range of { from : int, to : int }  (* integers from one number to another *)
+| Union of intSet * intSet (* union of the two sets *)
+| Intersection of intSet * intSet (* intersection of the two sets *)
+                
+```
+
+17. Write `isEmpty : intSet -> bool` that determines if the set is empty or not.
+
+
+
+18. Write `contains: intSet * int -> bool`that returns whether the set contains a certain element or not.
+
+```sml
+fun contains(intset, input) =
+        case intset of
+            Elems ls=> let
+                    fun listcontain(l)=
+                            case l of
+                                [] => false
+                            |p::p' => p = input orelse listcontain(p')
+                in
+                    listcontain(ls)
+                end
+        | Range{from=a,to=b} => input >= a andalso  input <= b
+        | Union(a,b) => contains(a, input) orelse contains(b, input)
+        | Intersection(a,b) => contains(a, input) andalso contains(b, input)
+
+val a = contains(Elems([1,2,3]), 3);
+```
+
+19. Write`toList : intSet -> int list` that returns a list with the set's elements, without duplicates.
+
+```sml
+难度有点高，暂未理解
+```
+
