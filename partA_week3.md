@@ -78,3 +78,12 @@ fun sum_tree x =
 val a = sum_tree(node{value=1,left=node{value=2,left=node{value=3,left=leaf,right=leaf},right=leaf},right=leaf})
 ```
 
+7. Write a function`gardener` of type `flag tree -> flag tree` such that its structure is identical to the original tree except all nodes of the input containing `prune_me` are (along with all their descendants) replaced with a leaf.
+
+```sml
+fun gardener x =
+    case t of
+        node {value=leave_me_alone, left=l, right=r} => node{value=leave_me_alone, left = gardener l,right= gardener r}
+        | _ => leaf
+```
+
