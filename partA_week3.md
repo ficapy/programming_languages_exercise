@@ -87,3 +87,64 @@ fun gardener x =
         | _ => leaf
 ```
 
+8. Re-implement various functions provided in the SML standard libraries for lists and options.  See http://sml-family.org/Basis/list.html and http://sml-family.org/Basis/option.html.  Good examples include `last`, `take`,`drop`, `concat`, `getOpt`, and `join`.
+
+```sml
+fun last x = 
+        case x of
+            [] => raise List.Empty
+        | a::[] => a
+        | a::as' => last as'
+
+val a = last [1,2,3,4];
+
+fun take(l,i) =
+        case i of
+            0 => []
+        | _ => hd l::take(tl l,i-1)
+
+val a = take([1,2,3],1);
+
+fun drop(l,i) =
+        case i of
+            0 => l
+        | _ => drop(tl l, i-1)
+
+val a = drop([1,2,3],1);
+
+fun concat l =
+        case l of 
+            [] => []
+        | x::xs' => x @ concat(xs');
+
+val a = concat [[1,2],[3,4]];
+
+fun getOpt x =
+        case x of 
+            (SOME(v), _) => v
+        | (_, a) => a
+
+join..... 我愣是没看明白它的函数签名
+val join : 'a option option -> 'a option
+```
+
+Problems 9-16 use this type definition for natural numbers:
+
+```sml
+datatype nat = ZERO | SUCC of nat
+```
+
+A "natural" number is either zero, or the "successor" of a another integer.    So for example the number 1 is just `SUCC ZERO`, the number 2 is `SUCC (SUCC ZERO)`, and so on.
+
+9. Write`is_positive : nat -> bool`, which given a "natural number" returns whether that number is positive (i.e. not zero).
+
+```sml
+fun is_positive x = 
+        case x of
+            ZERO => false
+        | _ => true
+
+val a = is_positive(SUCC ZERO);
+val a = is_positive(ZERO);
+```
+
