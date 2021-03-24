@@ -67,3 +67,14 @@ fun tree_height x =
 val a = tree_height(node{value=1,left=node{value=2,left=node{value=3,left=leaf,right=leaf},right=leaf},right=leaf})
 ```
 
+6. Write a function `sum_tree` that takes an `int tree` and evaluates to the sum of all values in the nodes.
+
+```sml
+fun sum_tree x =
+        case x of
+            leaf => 0
+        |node{value=v,left=l,right=r} => v + sum_tree(l) + sum_tree(r)
+    
+val a = sum_tree(node{value=1,left=node{value=2,left=node{value=3,left=leaf,right=leaf},right=leaf},right=leaf})
+```
+
