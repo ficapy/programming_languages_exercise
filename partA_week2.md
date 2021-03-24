@@ -99,6 +99,8 @@ print(min_max([1, 5, 2, 7, 9, -1]))
 
 3. Write a function `cumsum : int list -> int list` that takes a list of numbers and returns a list of the partial sums of those numbers. For example `cumsum [1,4,20] = [1,5,25]`
 
+这个例子表明了如果不添加附加参数，递归只擅长从后往前推，不擅长从前往后推，必须使用额外变量记录，每次从前往后推的时候变化的变量
+
 ```sml
 fun cumsum(l: int list) = 
         let fun inner(l, acc) = 
@@ -181,8 +183,7 @@ val c = addAllOpt([])
 ```sml
 fun any(l: bool list) =
         if null l then false else 
-            if null (tl l) then hd l else 
-                hd l orelse any(tl l)
+        		hd l orelse any(tl l)
 
 val a = any([true, false]);
 val a = any([]);
@@ -195,8 +196,7 @@ val a = any([false]);
 ```sml
 fun all(l: bool list) =
         if null l then true else 
-            if null (tl l) then hd l else 
-                hd l andalso all(tl l)
+        		hd l andalso all(tl l)
 
 val a = all([true, false]);
 val a = all([]);
@@ -362,6 +362,34 @@ fun splitAt1(a: int list, target: int) =
         in
             inner(a,[],[])
         end
+```
+
+这里也有很明显的允许从后往前处理的特征，因此有更简单的写法
+
+```sml
+fun splitAt(l:int list, target:int) = 
+        if null l then ([],[]) else
+            let
+                val result = splitAt(tl l, target)
+            in
+                if hd l > target 
+                then ((hd l)::(#1 result), #2 result)
+                else (#1 result, (hd l)::(#2 result))
+            end
+```
+
+```python
+def splitAt(l, target):
+    if not l:
+        return ([], [])
+    result = splitAt(l[1:], target)
+    large, small = result
+    if l[0] > target:
+        return (large + [l[0]], small)
+    else:
+        return (large, small + [l[0]])
+
+print(splitAt([3, 1, -3, 4,-1], 1))
 ```
 
 16. Write a function`isSorted : int list -> boolean` that given a list of integers determines whether the list is sorted in increasing order.
